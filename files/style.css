@@ -13,8 +13,8 @@ form {
 input {
     background: #6f8f8f;
     color: #332211;
-    border-color: #eee8aa;
-    border-radius: 10px;
+    border: 1px solid #eea;
+    border-radius: 4px;
     
 }
 
