@@ -70,17 +70,17 @@ var s = http.createServer(function (req, res) {
 		}
 		
 		if(endpoint == '/')
-			fs.readFile('./files/index.html', 'binary', function(err, file){
+				fs.readFile('./files/index.html', 'binary', function(err, file){
 				res.writeHead(200, {'Content-Type': 'text/html'});
 				res.write(file, 'binary');
 				res.end('\n');
-			});			
+				});			
 		else
-			fs.readFile(filepath, 'binary', function(err, file){
+				fs.readFile(filepath, 'binary', function(err, file){
 				res.writeHead(200, filetype(endpoint));
 				res.write(file, 'binary');
 				res.end('\n');
-			});
+				});
 	});
 });
 
