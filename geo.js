@@ -10,9 +10,9 @@ var PORTNUM = 8000;
 function serverLog(message){
 		var time = new Date();
 		console.log('['+ time.getHours() + ':' +
-								time.getMinutes() + ':' + 
-								time.getSeconds() + '] ' +
-								message);
+														time.getMinutes() + ':' + 
+														time.getSeconds() + '] ' +
+														message);
 }
 
 function filetype(filename){
@@ -22,7 +22,7 @@ function filetype(filename){
 		case '.html': return {'Content-Type':'text/html'};
 		case '.js':   return {'Content-Type':'text/script'};
 		case '.css':  return {'Content-Type':'text/css'};    
-		default:		  return {'Content-Type':'text/plain'};  
+		default:  		  return {'Content-Type':'text/plain'};  
 		}
 }
 
@@ -68,7 +68,7 @@ var s = http.createServer(function (req, res) {
 						}
 						return;
 				}
-
+				
 				if(endpoint == '/')
 						fs.readFile('./files/index.html', 'binary', function(err, file){
 								res.writeHead(200, {'Content-Type': 'text/html'});
