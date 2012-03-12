@@ -1,28 +1,73 @@
 body {
-    background: #2f4f4f;
-    color: #eee8aa;
+    background: #dde;
+    color: #442;
     font-family: 'Andale Mono';
     margin: 0px;
+    width:100%;
 }
 
-form {
-    text-align: center;
-    
+textarea, input { 
+    outline: none; 
+}
+
+.address {
+    width: 600px;
+}
+
+.qbutton {
+    height: 23px;
+    width: 50px:
 }
 
 input {
-    background: #6f8f8f;
-    color: #332211;
-    border: 1px solid #eea;
-    border-radius: 4px;
+    background: #fff;
+    color: #111;
+    border: 1px solid #668;
+    border-radius: 2px;
+    height: 23px;
+    padding: 0px;
+    margin: 0px;
     
 }
 
 #map_canvas {
-    width: 100%;
+    position:absolute;
+    top: 0px;
+    left: 0px;
+    right: 300px;
     height: 600px;
     margin: 0px auto;
     border-color: #eee8aa;
     border-radius: 13px;
     color: #2f4f4f
+}
+
+#feed {
+    position:absolute;
+    top: 0px;
+    right: 0px;
+    width: 300px;
+    height: 600px;
+    margin: 0px auto;
+    border: 1px solid #fff;
+    border-radius: 2px;
+    background: #fff;
+    
+}
+
+#input {
+    position:absolute;
+    top: 525px;
+    left: 75px;
+    right: 375px;
+    text-align: center;
+}
+
+#console {
+    position:absolute;
+    top: 601px;
+}
+
+.feedentry {
+    margin: 8px 0px 0px 0px;
 }
