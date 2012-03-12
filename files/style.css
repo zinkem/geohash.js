@@ -35,7 +35,7 @@ input {
     top: 0px;
     left: 0px;
     right: 300px;
-    height: 600px;
+    bottom: 80px;
     margin: 0px auto;
     border-color: #eee8aa;
     border-radius: 13px;
@@ -46,8 +46,8 @@ input {
     position:absolute;
     top: 0px;
     right: 0px;
+    bottom: 80px;
     width: 300px;
-    height: 600px;
     margin: 0px auto;
     border: 1px solid #fff;
     border-radius: 2px;
@@ -57,7 +57,7 @@ input {
 
 #input {
     position:absolute;
-    top: 525px;
+    bottom: 130px;
     left: 75px;
     right: 375px;
     text-align: center;
@@ -65,7 +65,7 @@ input {
 
 #console {
     position:absolute;
-    top: 601px;
+    bottom: 10px;
 }
 
 .feedentry {
