@@ -4,6 +4,7 @@ var path = require('path');
 var fs = require('fs');
 
 var geo = require('./lib/geolib');
+var geodb = require('./lib/geodb');
 
 var PORTNUM = 8000;
 
@@ -35,11 +36,15 @@ var s = http.createServer(function (req, res) {
   
   serverLog('Request for ' + endpoint );
   serverLog('Checking path ' + filepath);
-  
+  serverLog('Args ' + args.toString());
+
   path.exists(filepath, function(exists){
     if(!exists){
       serverLog(endpoint + ' does not exist');
       switch(endpoint){
+      case '/api/posts':
+        geodb.getPosts(res, args.hash);
+        break;
       case '/api/geohash':
         res.writeHead(200, {'Content-Type':'text/plain'});
         res.write(geo.hash(args.lat, args.lon));
@@ -51,7 +56,29 @@ var s = http.createServer(function (req, res) {
         res.write(loc.lat + ' ' + loc.lon);
         res.end('\n');
         break;
-      default:
+      case '/create':
+        //if args, create account
+        //if no args, show form for account creation
+        if(args.user && args.pass){
+          geodb.createUser(args.user, args.pass);
+          res.writeHead(200, {'Content-Type':'text/plain'});
+          res.end('Account Created\n');
+        } else {
+          res.writeHead(200, {'Content-Type':'text/plain'});
+          res.end('No arguments specified\n');
+        }
+        break;
+      case '/login':
+        //if args, login
+        //if no args, show form to log in
+        break;
+      case '/user':
+        //show user information
+        geodb.createPost(args.user, args.pass, args.content, args.hash);
+        res.writeHead(200);
+        res.end('nice job');
+        break;
+      default: //if it hasnt ben caught, probably a location hash
         var h = endpoint.slice(1);
         if(geo.validHash(h)){
           serverLog(h + ' is a valid hash!');

@@ -60,8 +60,8 @@ function flag(address){
 }
 
 function initialize() {
-  
-  var thishash = location.pathname.slice(1);
+  var thishash = location.pathname.slice(1); 
+ 
   if(thishash.length == 0)
     thishash = 'khdbbl85q5gj'
   
@@ -69,5 +69,44 @@ function initialize() {
   document.getElementById('hash_text').innerHTML = HOST + thishash;
   document.getElementById('address_text').innerHTML = '';
   document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
-  
+ 
+  var request = new XMLHttpRequest();
+  request.open('GET', 'api/posts?geohash=' + thishash, false);
+  request.send(null);
+
+  if(request.status == 200){
+    var posts = JSON.parse(request.responseText);
+
+    for( i in posts ){
+      var node = document.createElement('div');
+      node.className = 'post';
+      if(i%2 == 0){
+        node.className = 'odd_post';
+      }
+      
+      var poster = document.createElement('div');
+      poster.className = 'poster';
+      poster.innerHTML = posts[i].owner;
+
+      var content = document.createElement('div');
+      content.className = 'content';
+      content.innerHTML = posts[i].content;
+
+      var phash = document.createElement('span');
+      phash.className = 'phash';
+      phash.innerHTML = posts[i].geohash;
+
+      var time = document.createElement('span');
+      time.className = 'timestamp';
+      time.innerHTML = posts[i].time;
+
+
+      node.appendChild(poster);
+      node.appendChild(content);
+      node.appendChild(phash);
+      node.appendChild(time);
+      document.getElementById('feed').appendChild(node);
+    }
+  }
+ 
 }

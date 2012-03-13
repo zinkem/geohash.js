@@ -1,0 +1,8 @@
+Node.js Mapping Application
+Uses geohashes to attach information to locations
+
+Author Matthew Zinke
+Contact zinkem@gmail.com
+
+Requires mysql package from npm
+

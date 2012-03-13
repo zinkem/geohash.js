@@ -49,10 +49,15 @@ input {
     bottom: 80px;
     width: 300px;
     margin: 0px auto;
-    border: 1px solid #fff;
+    padding-top: 8px;;
+    border: 1px solid #00f;
     border-radius: 2px;
     background: #fff;
-    
+    font-family: 'Helvetica';
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-box-align:center;
+    -webkit-box-top: 0px;
 }
 
 #input {
@@ -68,6 +73,40 @@ input {
     bottom: 10px;
 }
 
-.feedentry {
-    margin: 8px 0px 0px 0px;
+.post {
+    margin: 4px 0px 4px 0px;
+    padding: 4px 4px 4px 4px;
+    width: 284px;
+    min-height: 50px;
 }
+
+.odd_post {
+    padding: 4px 4px 4px 4px;
+    background: #eef;
+    color: #333;
+    width: 284px;
+    min-height: 50px;
+    border-radius: 4px;
+}
+
+
+.poster {
+    font-size: 12px;
+}
+
+.content {
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-family: 'Times New Roman';
+}
+
+.phash {
+    font-size: 10px;
+    float: left;
+}
+
+.timestamp {
+    font-size: 10px;
+    float:right;
+}
+
