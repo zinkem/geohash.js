@@ -18,13 +18,22 @@ function serverLog(message){
 
 function filetype(filename){
   var ftype = path.extname(filename);
-  serverLog(filename + ' is ' + ftype);
   switch(ftype){
   case '.html': return {'Content-Type':'text/html'};
   case '.js':   return {'Content-Type':'text/script'};
   case '.css':  return {'Content-Type':'text/css'};    
   default:      return {'Content-Type':'text/plain'};  
   }
+}
+
+//assumes path exists!
+function serveFile(filepath, res, callback){
+  fs.readFile(filepath, 'binary', function(err, file){
+    res.writeHead(200, filetype(filepath));
+    res.write(file, 'binary');
+    res.end('\n');
+    if(callback) callback();
+  });
 }
 
 //'main'
@@ -35,12 +44,9 @@ var s = http.createServer(function (req, res) {
   var args = parsedReq.query;
   
   serverLog('Request for ' + endpoint );
-  serverLog('Checking path ' + filepath);
-  serverLog('Args ' + args.toString());
 
   path.exists(filepath, function(exists){
     if(!exists){
-      serverLog(endpoint + ' does not exist');
       switch(endpoint){
       case '/api/posts':
         geodb.getPosts(res, args.hash);
@@ -81,12 +87,7 @@ var s = http.createServer(function (req, res) {
       default: //if it hasnt ben caught, probably a location hash
         var h = endpoint.slice(1);
         if(geo.validHash(h)){
-          serverLog(h + ' is a valid hash!');
-          fs.readFile('./files/index.html', 'binary', function(err, file){
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(file, 'binary');
-            res.end('\n');
-          });     
+          serveFile('./files/index.html', res);
         } else {
           res.writeHead(404, {'Content-Type': 'text/plain'});
           res.write("Invalid Query.");
@@ -96,18 +97,11 @@ var s = http.createServer(function (req, res) {
       return;
     }
     
+    //fileserve stuff
     if(endpoint == '/')
-      fs.readFile('./files/index.html', 'binary', function(err, file){
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(file, 'binary');
-        res.end('\n');
-      });     
+      serveFile('./files/index.html', res);
     else
-      fs.readFile(filepath, 'binary', function(err, file){
-        res.writeHead(200, filetype(endpoint));
-        res.write(file, 'binary');
-        res.end('\n');
-      });
+      serveFile(filepath, res);
   });
 });
 
