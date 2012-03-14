@@ -81,8 +81,11 @@ var s = http.createServer(function (req, res) {
       case '/new':
         //show user information
         geodb.createPost(args.user, args.pass, args.content, args.hash);
-        res.writeHead(200);
-        res.end('nice job');
+        res.writeHead(302, {
+          'Location': '/'+args.hash
+          //add other headers here...
+        });
+        res.end();
         break;
       default: //if it hasnt ben caught, probably a location hash
         var h = endpoint.slice(1);
