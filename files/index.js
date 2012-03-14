@@ -101,7 +101,10 @@ function initialize() {
   if(request.status == 200){
     var posts = JSON.parse(request.responseText);
 
-    for( i in posts ){
+    for(var i = 0; i < posts.length; i++ ){
+      if(posts.length > 10  && i == 0)
+        i = posts.length - 10;
+
       placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
 
       var node = document.createElement('div');
