@@ -51,6 +51,7 @@ Navigator.prototype.gotoLatLng = function(lat, lng, zoom){
 Navigator.prototype.flagLatLng = function(lat, lng, zoom){
   var locale = new google.maps.LatLng(lat, lng);
   var marker = new google.maps.Marker({ map: this.map, position: locale});
+  return marker;
 }
 
 Navigator.prototype.gotoHash = function(hash){
@@ -67,10 +68,11 @@ Navigator.prototype.gotoHash = function(hash){
 Navigator.prototype.flagHash = function(hash){
   var coords = geofind(hash);
   if(coords == null)
-    return;
+    return null;
   
   locale = new google.maps.LatLng(coords.lat, coords.lng);
   var marker = new google.maps.Marker({ map: this.map, position: locale});
+  return marker;
 }
 
 //callback to handle stuff after the async call

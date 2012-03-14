@@ -24,11 +24,30 @@ function goto(address){
   });
 }
 
+function placeComment(hash, user, content){
+  var marker = mapnav.flagHash(hash);
+  var coords = geofind(hash);
+  var location = new google.maps.LatLng(coords.lat, coords.lng);
+  var infopts = {content: user + '> ' + content,
+                 disableAutoPan:false,
+                 maxWidth: 0,
+                 pixelOffset: new google.maps.Size(0, 0),
+                 position: location,
+                 zIndex: 1}
+  var infowin = new google.maps.InfoWindow(infopts);
+  
+  //listen for clicks...
+  google.maps.event.addListener(marker, 'click', function(event){
+    infowin.open(mapnav.map);
+  });
+  
+
+}
+
 function flag(address){
   document.getElementById('pinloc').value = '';
   mapnav.flagAddress(address, function(results, marker){
     //do stuff with the marker here, like add annotations
-
     var hash =  geohash(results[0].geometry.location.lat(),
                         results[0].geometry.location.lng());
 
@@ -83,6 +102,8 @@ function initialize() {
     var posts = JSON.parse(request.responseText);
 
     for( i in posts ){
+      placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
+
       var node = document.createElement('div');
       node.className = 'post';
       if(i%2 == 0){

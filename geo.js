@@ -79,12 +79,9 @@ var s = http.createServer(function (req, res) {
         //if no args, show form to log in
         break;
       case '/new':
-        //show user information
+        //create new post, redirect back to location of post
         geodb.createPost(args.user, args.pass, args.content, args.hash);
-        res.writeHead(302, {
-          'Location': '/'+args.hash
-          //add other headers here...
-        });
+        res.writeHead(302, { 'Location': '/'+args.hash });
         res.end();
         break;
       default: //if it hasnt ben caught, probably a location hash
