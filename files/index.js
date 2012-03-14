@@ -14,10 +14,13 @@ function goto(address){
     var lat = results[0].geometry.location.lat();
     var lng = results[0].geometry.location.lng();
     map.setCenter(results[0].geometry.location);
-    
-    document.getElementById('hash_text').innerHTML = HOST + geohash(lat, lng);
+
+    var thishash = geohash(lat, lng);
+
+    document.getElementById('hash_text').innerHTML = HOST + thishash;
     document.getElementById('address_text').innerHTML = results[0].formatted_address;
     document.getElementById('gps_text').innerHTML = lat + ', ' + lng;
+    document.getElementById('hash').value = thishash;
   });
 }
 
@@ -28,6 +31,8 @@ function flag(address){
 
     var hash =  geohash(results[0].geometry.location.lat(),
                         results[0].geometry.location.lng());
+
+
     var content =  '<h6>' + hash + '<br/>' + 
       results[0].formatted_address + '</h6>';
 
@@ -61,10 +66,10 @@ function flag(address){
 
 function initialize() {
   var thishash = location.pathname.slice(1); 
- 
   if(thishash.length == 0)
     thishash = 'khdbbl85q5gj'
-  
+  document.getElementById('hash').value = thishash;
+   
   mapnav = getNavWithHash('map_canvas', thishash);
   document.getElementById('hash_text').innerHTML = HOST + thishash;
   document.getElementById('address_text').innerHTML = '';

@@ -46,11 +46,11 @@ input {
     position:absolute;
     top: 0px;
     right: 0px;
-    bottom: 80px;
+    bottom: 79px;
     width: 300px;
     margin: 0px auto;
     padding-top: 8px;;
-    border: 1px solid #00f;
+    border: 1px solid #dde;
     border-radius: 2px;
     background: #fff;
     font-family: 'Helvetica';
@@ -62,7 +62,7 @@ input {
 
 #input {
     position:absolute;
-    bottom: 130px;
+    bottom: 100px;
     left: 75px;
     right: 375px;
     text-align: center;
@@ -71,6 +71,23 @@ input {
 #console {
     position:absolute;
     bottom: 10px;
+}
+
+#create_post {
+    background: #eef;
+    padding:8px;
+    position:absolute;
+    right: 13px;
+    bottom: 13px;
+    border-radius:4px;
+}
+
+#p_entry {
+    width:300px;
+}
+
+.address {
+    background: rgba(100%, 100%, 100%, 0.5);
 }
 
 .post {

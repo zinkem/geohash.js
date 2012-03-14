@@ -23,12 +23,14 @@
                placeholder="Enter an address to center map."/>
         <!-- input class="qbutton" type="submit" value="find" / -->
       </form>
-      
+    
+      <!--
       <form action="javascript:flag(document.getElementById('pinloc').value)">
         <input class="address" type="text" id="pinloc"
                placeholder="Enter an address to place marker on map." />
-        <!-- input class="qbutton" type="submit" value="mark" /-->
+        <!-- input class="qbutton" type="submit" value="mark" />
       </form>
+      -->
     </div>
 
     <div id="console">
@@ -37,6 +39,17 @@
       <div id="gps_text"></div>
     </div>
 
+    <div id="create_post">
+      <form action="/new">
+        <input name="user" type="text" placeholder="Username"/>
+        <input name="pass" type="text" placeholder="Password"/>
+        <input id="p_entry" name="content" type="text" placeholder="Your thoughts"/>
+        <input id="hash" name="hash" type="hidden" />
+        <input type="submit" value="Post" />
+      </form>
+    </div>
+
+    
   </body>
   
 </html>

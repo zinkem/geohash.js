@@ -78,7 +78,7 @@ var s = http.createServer(function (req, res) {
         //if args, login
         //if no args, show form to log in
         break;
-      case '/user':
+      case '/new':
         //show user information
         geodb.createPost(args.user, args.pass, args.content, args.hash);
         res.writeHead(200);
