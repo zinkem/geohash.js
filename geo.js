@@ -80,9 +80,7 @@ var s = http.createServer(function (req, res) {
       case '/new':
         //create new post, redirect back to location of post
         serverLog(args.hash+'#'+args.user+' posts `'+args.content+'`');
-        geodb.createPost(args.user, args.pass, args.content, args.hash);
-        res.writeHead(302, { 'Location': '/'+args.hash });
-        res.end();
+        geodb.createPost(args.user, args.pass, args.content, args.hash, res);
         break;
       default: //if it hasnt ben caught, probably a location hash
         var h = endpoint.slice(1);
