@@ -94,8 +94,20 @@ function initialize() {
   mapnav = getNavWithHash('map_canvas', thishash);
   current_position_marker = mapnav.flagHash(thishash);
   current_position_marker.setOptions({
+    draggable: true,
     animation: google.maps.Animation.DROP
   });
+
+  google.maps.event.addListener(current_position_marker, 'dragend', function(event){
+    var newlocation = current_position_marker.getPosition();
+    
+    var thishash = geohash(newlocation.lat(), newlocation.lng());
+    document.getElementById('hash_text').innerHTML = HOST + thishash;
+    document.getElementById('address_text').innerHTML = '';
+    document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
+    document.getElementById('hash').value = thishash;
+  });
+
 
   google.maps.event.addListener(mapnav.map, 'dragend',  function(){
     var newlocation = mapnav.map.getCenter();
@@ -109,8 +121,6 @@ function initialize() {
     document.getElementById('address_text').innerHTML = '';
     document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
     document.getElementById('hash').value = thishash;
-
-    console.log("Dragend! " + newlocation);
   });
   
   document.getElementById('hash').value = thishash;
