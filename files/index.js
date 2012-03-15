@@ -132,8 +132,12 @@ function initialize() {
     current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
   
-  google.maps.event.addListener(current_position_marker, 'dragstart', function(event){
+  google.maps.event.addListener(current_position_marker, 'mousedown', function(event){
     current_position_marker.setOptions({ icon: '/img/you-are-here-1.png' });
+  });
+
+  google.maps.event.addListener(current_position_marker, 'mouseup', function(event){
+    current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
 
   google.maps.event.addListener(current_position_marker, 'dragend', function(event){
