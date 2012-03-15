@@ -124,9 +124,13 @@ a { text-decoration: none; }
     float: left;
     border: 1px solid #dde;
     padding: 2px;
-    background: #ccd;
+    background: #eee;
     border-radius: 3px;
+    font-family: 'Symbol'; 
+}
 
+.phash:hover {
+   background: #fff;
 }
 
 .timestamp {

@@ -124,8 +124,7 @@ function initialize() {
 
       var phash = document.createElement('span');
       phash.className = 'phash';
-      phash.innerHTML = '<a href="/'+posts[i].geohash+'">'
-        +posts[i].geohash+'</a>';
+      phash.innerHTML = '<a href="/'+posts[i].geohash+'">goto</a>';
 
       var time = document.createElement('span');
       time.className = 'timestamp';
