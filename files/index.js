@@ -209,6 +209,7 @@ function initialize() {
     document.getElementById('address_text').innerHTML = '';
     document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
     document.getElementById('hash').value = thishash;
+    getPosts(thishash);
     current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
 
