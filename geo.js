@@ -49,7 +49,7 @@ var s = http.createServer(function (req, res) {
     if(!exists){
       switch(endpoint){
       case '/api/posts':
-        geodb.getPosts(res, args.hash);
+        geodb.getPosts(res, args.geohash);
         break;
       case '/api/geohash':
         res.writeHead(200, {'Content-Type':'text/plain'});

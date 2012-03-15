@@ -9,6 +9,62 @@ var HOST = 'http://www.zinkem.com:8000/';
 var mapnav;
 var current_position_marker;
 
+
+
+function getPosts(thishash){
+  document.body.removeChild(document.getElementById('feed'));
+  var newfeed = document.createElement('div');
+  newfeed.id = 'feed';
+  document.body.appendChild(newfeed);
+  
+  var request = new XMLHttpRequest();
+  request.open('GET', 'api/posts?geohash=' + thishash, false);
+  request.send(null);
+  
+  if(request.status == 200){
+    var posts = JSON.parse(request.responseText);
+    
+    for(var i = 0; i < posts.length; i++ ){
+      if(posts.length > 8  && i == 0)
+        i = posts.length - 8;
+      
+      //put comment on the map
+      placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
+
+      var node = document.createElement('div');
+      node.className = 'post';
+      if(i%2 == 0){
+        node.className = 'odd_post';
+      }
+      
+      var poster = document.createElement('div');
+      poster.className = 'poster';
+      poster.innerHTML = posts[i].owner;
+
+      var content = document.createElement('div');
+      content.className = 'content';
+      content.innerHTML = posts[i].content;
+
+      var phash = document.createElement('span');
+      phash.className = 'phash';
+      phash.innerHTML = '<a href="/'+posts[i].geohash+'">goto</a>';
+
+      var time = document.createElement('span');
+      time.className = 'timestamp';
+      time.innerHTML = posts[i].time;
+
+
+      node.appendChild(poster);
+      node.appendChild(content);
+      node.appendChild(phash);
+      node.appendChild(time);
+      document.getElementById('feed').appendChild(node);
+    }
+  }
+}
+
+
+
 function goto(address){
   document.getElementById('query').value = '';
   mapnav.gotoAddress(address, function(results) {
@@ -25,6 +81,7 @@ function goto(address){
     document.getElementById('address_text').innerHTML = results[0].formatted_address;
     document.getElementById('gps_text').innerHTML = lat + ', ' + lng;
     document.getElementById('hash').value = thishash;
+    getPosts(thishash);
   });
 }
 
@@ -108,8 +165,12 @@ function markerAdjust(){
     document.getElementById('address_text').innerHTML = '';
     document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
     document.getElementById('hash').value = thishash;
+
+    getPosts(thishash);
   }
 }
+
+
 
 function initialize() {
   var thishash = location.pathname.slice(1); 
@@ -158,50 +219,7 @@ function initialize() {
   document.getElementById('hash_text').innerHTML = HOST + thishash;
   document.getElementById('address_text').innerHTML = '';
   document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
- 
-  var request = new XMLHttpRequest();
-  request.open('GET', 'api/posts?geohash=' + thishash, false);
-  request.send(null);
 
-  if(request.status == 200){
-    var posts = JSON.parse(request.responseText);
-
-    for(var i = 0; i < posts.length; i++ ){
-      if(posts.length > 8  && i == 0)
-        i = posts.length - 8;
-      
-      //put comment on the map
-      placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
-
-      var node = document.createElement('div');
-      node.className = 'post';
-      if(i%2 == 0){
-        node.className = 'odd_post';
-      }
-      
-      var poster = document.createElement('div');
-      poster.className = 'poster';
-      poster.innerHTML = posts[i].owner;
-
-      var content = document.createElement('div');
-      content.className = 'content';
-      content.innerHTML = posts[i].content;
-
-      var phash = document.createElement('span');
-      phash.className = 'phash';
-      phash.innerHTML = '<a href="/'+posts[i].geohash+'">goto</a>';
-
-      var time = document.createElement('span');
-      time.className = 'timestamp';
-      time.innerHTML = posts[i].time;
-
-
-      node.appendChild(poster);
-      node.appendChild(content);
-      node.appendChild(phash);
-      node.appendChild(time);
-      document.getElementById('feed').appendChild(node);
-    }
-  }
+  getPosts(thishash);
  
 }
