@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GeoHash Proof of Concept</title>
+    <link rel="stylesheet" href="/style.css" type="text/css" />
+  </head>
+  <script type="text/javascript"
+          src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCddAsi8obXG5XMPFXdx_RvdNSjgELTtDU&sensor=false">
+  </script>
+
+  <script type="text/javascript" src="geohash.js"></script>
+  <script type="text/javascript" src="navigator.js"></script>
+
+  <body onload="initialize()">
+    <div id="create_account">
+      <form action="/api/create">
+        <input name="user" type="text" placeholder="Username"/>
+        <input name="pass" type="password" placeholder="Password"/>
+        <input type="submit" value="Create Account" style="padding:2px;"/>
+      </form>
+    </div>
+  </body>
+</html>

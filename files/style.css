@@ -11,7 +11,7 @@ textarea, input {
 }
 
 .address {
-    width: 600px;
+    width: 100%;
 }
 
 .qbutton {
@@ -49,7 +49,7 @@ input {
     bottom: 79px;
     width: 300px;
     margin: 0px auto;
-    padding-top: 8px;;
+    padding-top: 4px;
     border: 1px solid #dde;
     border-radius: 2px;
     background: #fff;
@@ -82,8 +82,24 @@ input {
     border-radius:4px;
 }
 
+#create_account {
+    background: #eef;
+    padding:8px;
+    width: 480px;
+    border-radius:4px;
+    position:absolute;
+    top:33%;
+    left:50%;
+    margin-left: -240px;
+    text-align: center;
+}
+
 #p_entry {
     width:300px;
+}
+
+#newuser {
+    font-size:8px;
 }
 
 a { text-decoration: none; } 
@@ -97,6 +113,7 @@ a { text-decoration: none; }
     padding: 4px 4px 4px 4px;
     width: 284px;
     min-height: 50px;
+    background: #ffe;
 }
 
 .odd_post {

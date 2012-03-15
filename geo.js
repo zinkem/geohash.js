@@ -62,16 +62,13 @@ var s = http.createServer(function (req, res) {
         res.write(loc.lat + ' ' + loc.lon);
         res.end('\n');
         break;
-      case '/create':
+      case '/api/create':
         //if args, create account
         //if no args, show form for account creation
         if(args.user && args.pass){
-          geodb.createUser(args.user, args.pass);
-          res.writeHead(200, {'Content-Type':'text/plain'});
-          res.end('Account Created\n');
+          geodb.createUser(args.user, args.pass, res);
         } else {
-          res.writeHead(200, {'Content-Type':'text/plain'});
-          res.end('No arguments specified\n');
+          serveFile('./files/newuser.html', res);
         }
         break;
       case '/login':
