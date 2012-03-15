@@ -39,6 +39,8 @@ function placeComment(hash, user, content){
                  position: location,
                  zIndex: 1}
   var infowin = new google.maps.InfoWindow(infopts);
+
+  marker.setIcon('/img/comment-map-icon-2.png');
   
   //listen for clicks...
   google.maps.event.addListener(marker, 'click', function(event){
@@ -118,7 +120,20 @@ function initialize() {
   current_position_marker = mapnav.flagHash(thishash);
   current_position_marker.setOptions({
     draggable: true,
-    animation: google.maps.Animation.DROP
+    animation: google.maps.Animation.DROP,
+    icon: '/img/you-are-here-2.png'
+  });
+
+  google.maps.event.addListener(current_position_marker, 'mouseover', function(event){
+    current_position_marker.setOptions({ icon: '/img/you-are-here-3.png' });
+  });
+
+  google.maps.event.addListener(current_position_marker, 'mouseout', function(event){
+    current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
+  });
+  
+  google.maps.event.addListener(current_position_marker, 'dragstart', function(event){
+    current_position_marker.setOptions({ icon: '/img/you-are-here-1.png' });
   });
 
   google.maps.event.addListener(current_position_marker, 'dragend', function(event){
@@ -129,10 +144,10 @@ function initialize() {
     document.getElementById('address_text').innerHTML = '';
     document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
     document.getElementById('hash').value = thishash;
+    current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
 
   google.maps.event.addListener(mapnav.map, 'dragend',  markerAdjust);
-  
   google.maps.event.addListener(mapnav.map, 'zoom_changed', markerAdjust);
 
   document.getElementById('hash').value = thishash;
