@@ -86,6 +86,29 @@ function flag(address){
   });
 }
 
+function markerAdjust(){
+
+  var mapbounds = mapnav.map.getBounds();
+  var ne = mapbounds.getNorthEast();
+  var sw = mapbounds.getSouthWest();
+  var markedloc = current_position_marker.getPosition();
+  if(markedloc.lat() > ne.lat() || markedloc.lat() < sw.lat() ||
+     markedloc.lng() > ne.lng() || markedloc.lng() < sw.lng() ){
+
+    var newlocation = mapnav.map.getCenter();
+    
+    current_position_marker.setOptions({
+      position: newlocation
+    });
+    
+    var thishash = geohash(newlocation.lat(), newlocation.lng());
+    document.getElementById('hash_text').innerHTML = HOST + thishash;
+    document.getElementById('address_text').innerHTML = '';
+    document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
+    document.getElementById('hash').value = thishash;
+  }
+}
+
 function initialize() {
   var thishash = location.pathname.slice(1); 
   if(thishash.length == 0)
@@ -108,21 +131,10 @@ function initialize() {
     document.getElementById('hash').value = thishash;
   });
 
-
-  google.maps.event.addListener(mapnav.map, 'dragend',  function(){
-    var newlocation = mapnav.map.getCenter();
-
-    current_position_marker.setOptions({
-      position: newlocation
-    });
-
-    var thishash = geohash(newlocation.lat(), newlocation.lng());
-    document.getElementById('hash_text').innerHTML = HOST + thishash;
-    document.getElementById('address_text').innerHTML = '';
-    document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
-    document.getElementById('hash').value = thishash;
-  });
+  google.maps.event.addListener(mapnav.map, 'dragend',  markerAdjust);
   
+  google.maps.event.addListener(mapnav.map, 'zoom_changed', markerAdjust);
+
   document.getElementById('hash').value = thishash;
   document.getElementById('hash_text').innerHTML = HOST + thishash;
   document.getElementById('address_text').innerHTML = '';
