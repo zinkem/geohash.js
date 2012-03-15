@@ -102,8 +102,8 @@ function initialize() {
     var posts = JSON.parse(request.responseText);
 
     for(var i = 0; i < posts.length; i++ ){
-      if(posts.length > 10  && i == 0)
-        i = posts.length - 10;
+      if(posts.length > 8  && i == 0)
+        i = posts.length - 8;
       
       //put comment on the map
       placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
