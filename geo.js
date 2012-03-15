@@ -42,13 +42,14 @@ var s = http.createServer(function (req, res) {
   var endpoint = parsedReq.pathname;
   var filepath = path.join(process.cwd(), 'files', endpoint);
   var args = parsedReq.query;
-  
-  serverLog('Request for ' + endpoint );
 
+  //serverLog('Request for ' + endpoint );
+  
   path.exists(filepath, function(exists){
     if(!exists){
       switch(endpoint){
       case '/api/posts':
+        serverLog(args.geohash+' fetch');
         geodb.getPosts(res, args.geohash);
         break;
       case '/api/geohash':
@@ -66,6 +67,7 @@ var s = http.createServer(function (req, res) {
         //if args, create account
         //if no args, show form for account creation
         if(args.user && args.pass){
+          serverLog('Attempting to create account for '+args.user);
           geodb.createUser(args.user, args.pass, res);
         } else {
           serveFile('./files/newuser.html', res);
@@ -77,6 +79,7 @@ var s = http.createServer(function (req, res) {
         break;
       case '/new':
         //create new post, redirect back to location of post
+        serverLog(args.hash+'#'+args.user+' posts `'+args.content+'`');
         geodb.createPost(args.user, args.pass, args.content, args.hash);
         res.writeHead(302, { 'Location': '/'+args.hash });
         res.end();
