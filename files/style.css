@@ -10,7 +10,7 @@ textarea, input {
     outline: none; 
 }
 
-
+a:link { color: #335; }
 a:visited { color: #335; }
 a:active { color: #eef; } 
 
