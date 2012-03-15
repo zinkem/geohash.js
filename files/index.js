@@ -7,6 +7,7 @@
 
 var HOST = 'http://www.zinkem.com:8000/';
 var mapnav;
+var current_position_marker;
 
 function goto(address){
   document.getElementById('query').value = '';
@@ -16,6 +17,9 @@ function goto(address){
     map.setCenter(results[0].geometry.location);
 
     var thishash = geohash(lat, lng);
+    current_position_marker.setOptions({
+      position: results[0].geometry.location
+    });
 
     document.getElementById('hash_text').innerHTML = HOST + thishash;
     document.getElementById('address_text').innerHTML = results[0].formatted_address;
@@ -50,7 +54,6 @@ function flag(address){
     //do stuff with the marker here, like add annotations
     var hash =  geohash(results[0].geometry.location.lat(),
                         results[0].geometry.location.lng());
-
 
     var content =  '<h6>' + hash + '<br/>' + 
       results[0].formatted_address + '</h6>';
@@ -87,9 +90,30 @@ function initialize() {
   var thishash = location.pathname.slice(1); 
   if(thishash.length == 0)
     thishash = 'khdbbl85q5gj'
-  document.getElementById('hash').value = thishash;
    
   mapnav = getNavWithHash('map_canvas', thishash);
+  current_position_marker = mapnav.flagHash(thishash);
+  current_position_marker.setOptions({
+    animation: google.maps.Animation.DROP
+  });
+
+  google.maps.event.addListener(mapnav.map, 'dragend',  function(){
+    var newlocation = mapnav.map.getCenter();
+
+    current_position_marker.setOptions({
+      position: newlocation
+    });
+
+    var thishash = geohash(newlocation.lat(), newlocation.lng());
+    document.getElementById('hash_text').innerHTML = HOST + thishash;
+    document.getElementById('address_text').innerHTML = '';
+    document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
+    document.getElementById('hash').value = thishash;
+
+    console.log("Dragend! " + newlocation);
+  });
+  
+  document.getElementById('hash').value = thishash;
   document.getElementById('hash_text').innerHTML = HOST + thishash;
   document.getElementById('address_text').innerHTML = '';
   document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;

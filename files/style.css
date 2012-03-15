@@ -10,6 +10,10 @@ textarea, input {
     outline: none; 
 }
 
+
+a:visited { color: #335; }
+a:active { color: #eef; } 
+
 .address {
     width: 100%;
 }
@@ -144,11 +148,16 @@ a { text-decoration: none; }
     background: #eee;
     border-radius: 3px;
     font-family: 'Symbol'; 
+    font-color: #000;
+    
 }
+
 
 .phash:hover {
    background: #fff;
+   
 }
+
 
 .timestamp {
     font-size: 10px;
