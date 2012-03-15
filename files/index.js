@@ -104,7 +104,8 @@ function initialize() {
     for(var i = 0; i < posts.length; i++ ){
       if(posts.length > 10  && i == 0)
         i = posts.length - 10;
-
+      
+      //put comment on the map
       placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
 
       var node = document.createElement('div');
@@ -123,7 +124,8 @@ function initialize() {
 
       var phash = document.createElement('span');
       phash.className = 'phash';
-      phash.innerHTML = posts[i].geohash;
+      phash.innerHTML = '<a href="/'+posts[i].geohash+'">'
+        +posts[i].geohash+'</a>';
 
       var time = document.createElement('span');
       time.className = 'timestamp';
