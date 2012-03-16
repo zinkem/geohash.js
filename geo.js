@@ -88,14 +88,13 @@ var s = http.createServer(function (req, res) {
         serverLog(args.hash+'#'+args.user+' posts `'+args.content+'`');
         geodb.createPost(args.user, args.pass, args.content, args.hash, res);
         break;
-      case '/u/':
-        serverLog("burp");
-        res.end();
-        break;
       default: //if it hasnt ben caught, probably a location hash
         var h = endpoint.slice(1);
         if(geo.validHash(h)){
           serveFile('./files/index.html', res);
+        } else if( endpoint.substring(0, 3) == '/u/' &&
+                   endpoint.slice(3)) { 
+          serveFile('./files/userfeed.html', res);
         } else {
           res.writeHead(404, {'Content-Type': 'text/plain'});
           res.write("Invalid Query.");

@@ -8,9 +8,9 @@
 
 function getPosts(user){
   var request = new XMLHttpRequest();
-  request.open('GET', 'api/posts?user=' + user, false);
+  request.open('GET', '../api/posts?user=' + user, false);
   request.send(null);
-  
+
   if(request.status == 200){
     var posts = JSON.parse(request.responseText);
 
@@ -53,7 +53,6 @@ function getPosts(user){
 function initialize(){
   
   var thisuser = location.pathname.slice(3);
-
   getPosts(thisuser);
 
 }
