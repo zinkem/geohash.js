@@ -183,9 +183,38 @@ function markerAdjust(){
 
 function initialize() {
   var thishash = location.pathname.slice(1); 
-  if(thishash.length == 0)
-    thishash = 'khdbbl85q5gj'
-   
+
+  if(thishash.length == 0){
+    if(navigator.geolocation){
+
+      navigator.geolocation.getCurrentPosition(function(position){
+        var lt = position.coords.latitude;
+        var lg = position.coords.longitude;
+        console.log('Current position is '+lt+','+lg+'!');
+        thishash = geohash(lt, lg);
+        console.log(thishash);
+        mapnav.gotoLatLng(lt, lg);
+
+        current_position_marker.setOptions({
+          position: new google.maps.LatLng(lt, lg)
+        });
+        
+        document.getElementById('hash').value = thishash;
+        document.getElementById('hash_text').innerHTML = HOST + thishash;
+        document.getElementById('address_text').innerHTML = '';
+        document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
+
+        getPosts(thishash);
+      });
+
+    } else {
+      console.log('GeoLocation not supported');
+      thishash = 'khdbbl85q5gj'
+    }
+  }
+
+  thishash = 'khdbbl85q5gj'
+
   mapnav = getNavWithHash('map_canvas', thishash);
   current_position_marker = mapnav.flagHash(thishash);
   current_position_marker.setOptions({
