@@ -58,10 +58,30 @@ input {
     border-radius: 2px;
     background: #fff;
     font-family: 'Helvetica';
-    display:-webkit-box;
+/*  
+  display:-webkit-box;
     -webkit-box-orient:vertical;
     -webkit-box-align:center;
     -webkit-box-top: 0px;
+*/
+}
+
+#userfeed {
+    position:absolute;
+    background: #eef;
+    padding: 8px;
+    width: 300px;
+    border-radius: 4px;
+    position:absolute;
+    top: 10px;
+    left: 50%;
+    margin-left: -150px;
+    font-family: 'Helvetica';
+/*    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-box-align:center;
+    -webkit-box-top: 0px;
+*/
 }
 
 #input {
@@ -114,20 +134,24 @@ a { text-decoration: none; }
 
 .post {
     margin: 4px 0px 4px 0px;
-    padding: 4px 4px 13px 4px;
+    padding: 4px 4px 20px 4px;
     width: 284px;
     min-height: 50px;
     background: #ffe;
+    position:relative;
+    left: 4px;
 }
 
 .odd_post {
     margin: 4px 0px 4px 0px;
-    padding: 4px 4px 13px 4px;
+    padding: 4px 4px 20px 4px;
     background: #eef;
     color: #333;
     width: 284px;
     min-height: 50px;
     border-radius: 4px;
+    position:relative;
+    left: 4px;
 }
 
 
@@ -140,6 +164,7 @@ a { text-decoration: none; }
 
 .content {
     font-size: 14px;
+    margin-top: 8px;
     margin-bottom: 8px;
     font-family: 'Times New Roman';
 }
