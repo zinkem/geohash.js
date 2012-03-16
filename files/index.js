@@ -66,13 +66,12 @@ function getPosts(thishash){
       node.appendChild(content);
       node.appendChild(phash);
       node.appendChild(time);
-      document.getElementById('feed').appendChild(node);
+      newfeed.insertBefore(node, newfeed.firstChild);
     }
   }
 }
 
-
-
+//goes to address when it is typed in search bar
 function goto(address){
   document.getElementById('query').value = '';
   mapnav.gotoAddress(address, function(results) {
@@ -94,6 +93,7 @@ function goto(address){
   });
 }
 
+//places a marker on the map, or TODO: update marker when one already exists
 function placeComment(hash, user, content){
   var marker = mapnav.flagHash(hash);
   var coords = geofind(hash);
@@ -112,48 +112,9 @@ function placeComment(hash, user, content){
   google.maps.event.addListener(marker, 'click', function(event){
     infowin.open(mapnav.map);
   });
-  
-
 }
 
-function flag(address){
-  document.getElementById('pinloc').value = '';
-  mapnav.flagAddress(address, function(results, marker){
-    //do stuff with the marker here, like add annotations
-    var hash =  geohash(results[0].geometry.location.lat(),
-                        results[0].geometry.location.lng());
-
-    var content =  '<h6>' + hash + '<br/>' + 
-      results[0].formatted_address + '</h6>';
-
-    var infopts = {content: content,
-                   disableAutoPan:false,
-                   maxWidth: 0,
-                   pixelOffset: new google.maps.Size(0, 0),
-                   position: results[0].geometry.location,
-                   zIndex: 1}
-    var infowin = new google.maps.InfoWindow(infopts);
-    
-    //listen for clicks...
-    google.maps.event.addListener(marker, 'click', function(event){
-      infowin.open(mapnav.map);
-    });
-    
-
-    var feedentry = '<div class="feedentry">';
-    feedentry += '<div class="hash">' + hash + '</div>';
-    feedentry += '<div class="faddr">' +results[0].formatted_address+ '</div>';
-    feedentry += '<div class="flatlng">(' + 
-      results[0].geometry.location.lat() + ', ' + 
-      results[0].geometry.location.lng() + ')</div>';
-    feedentry += '</div>';
-
-    var feed = document.getElementById('feed');
-    feed.innerHTML = feedentry + feed.innerHTML;
-
-  });
-}
-
+//adjusts current position marker when map moves
 function markerAdjust(){
 
   var mapbounds = mapnav.map.getBounds();
@@ -179,6 +140,7 @@ function markerAdjust(){
   }
 }
 
+//initializes the current position marker
 function initCurrentPosition(thishash){
   current_position_marker = mapnav.flagHash(thishash);
   current_position_marker.setOptions({
@@ -219,29 +181,31 @@ function initCurrentPosition(thishash){
   google.maps.event.addListener(mapnav.map, 'zoom_changed', markerAdjust);
 }
 
+function initMap(thishash){
+  
+  mapnav = getNavWithHash('map_canvas', thishash);
+  initCurrentPosition(thishash);
+  
+  document.getElementById('hash').value = thishash;
+  document.getElementById('hash_text').innerHTML = HOST + thishash;
+  document.getElementById('address_text').innerHTML = '';
+  document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
+  
+  getPosts(thishash);
+}
 
+//initializes the page
 function initialize() {
   var thishash = location.pathname.slice(1); 
   
   if(thishash.length == 0){
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(function(position){
-
         var lt = position.coords.latitude;
         var lg = position.coords.longitude;
-        console.log('Current position is '+lt+','+lg+'!');
-        thishash = geohash(lt, lg);
-        console.log(thishash);
-
-        mapnav = getNavWithHash('map_canvas', thishash);
-        initCurrentPosition(thishash);
-        
-        document.getElementById('hash').value = thishash;
-        document.getElementById('hash_text').innerHTML = HOST + thishash;
-        document.getElementById('address_text').innerHTML = '';
-        document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
-
-        getPosts(thishash);
+        thishash = geohash(position.coords.latitude,
+                           position.coords.longitude);
+        initMap(thishash);
 
       });
       return;
@@ -252,14 +216,5 @@ function initialize() {
     }
   }
 
-  mapnav = getNavWithHash('map_canvas', thishash);
-  initCurrentPosition(thishash);
-  
-  document.getElementById('hash').value = thishash;
-  document.getElementById('hash_text').innerHTML = HOST + thishash;
-  document.getElementById('address_text').innerHTML = '';
-  document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
-  
-  getPosts(thishash);
- 
+  initMap(thishash);
 }
