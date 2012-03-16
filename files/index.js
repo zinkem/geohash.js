@@ -179,54 +179,18 @@ function markerAdjust(){
   }
 }
 
-
-
-function initialize() {
-  var thishash = location.pathname.slice(1); 
-
-  if(thishash.length == 0){
-    if(navigator.geolocation){
-
-      navigator.geolocation.getCurrentPosition(function(position){
-        var lt = position.coords.latitude;
-        var lg = position.coords.longitude;
-        console.log('Current position is '+lt+','+lg+'!');
-        thishash = geohash(lt, lg);
-        console.log(thishash);
-        mapnav.gotoLatLng(lt, lg);
-
-        current_position_marker.setOptions({
-          position: new google.maps.LatLng(lt, lg)
-        });
-        
-        document.getElementById('hash').value = thishash;
-        document.getElementById('hash_text').innerHTML = HOST + thishash;
-        document.getElementById('address_text').innerHTML = '';
-        document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
-
-        getPosts(thishash);
-      });
-
-    } else {
-      console.log('GeoLocation not supported');
-      thishash = 'khdbbl85q5gj'
-    }
-  }
-
-  thishash = 'khdbbl85q5gj'
-
-  mapnav = getNavWithHash('map_canvas', thishash);
+function initCurrentPosition(thishash){
   current_position_marker = mapnav.flagHash(thishash);
   current_position_marker.setOptions({
     draggable: true,
     animation: google.maps.Animation.DROP,
     icon: '/img/you-are-here-2.png'
   });
-
+  
   google.maps.event.addListener(current_position_marker, 'mouseover', function(event){
     current_position_marker.setOptions({ icon: '/img/you-are-here-3.png' });
   });
-
+  
   google.maps.event.addListener(current_position_marker, 'mouseout', function(event){
     current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
@@ -234,11 +198,11 @@ function initialize() {
   google.maps.event.addListener(current_position_marker, 'mousedown', function(event){
     current_position_marker.setOptions({ icon: '/img/you-are-here-1.png' });
   });
-
+  
   google.maps.event.addListener(current_position_marker, 'mouseup', function(event){
     current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
-
+  
   google.maps.event.addListener(current_position_marker, 'dragend', function(event){
     var newlocation = current_position_marker.getPosition();
     
@@ -250,15 +214,52 @@ function initialize() {
     getPosts(thishash);
     current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
-
+  
   google.maps.event.addListener(mapnav.map, 'dragend',  markerAdjust);
   google.maps.event.addListener(mapnav.map, 'zoom_changed', markerAdjust);
+}
 
+
+function initialize() {
+  var thishash = location.pathname.slice(1); 
+  
+  if(thishash.length == 0){
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(position){
+
+        var lt = position.coords.latitude;
+        var lg = position.coords.longitude;
+        console.log('Current position is '+lt+','+lg+'!');
+        thishash = geohash(lt, lg);
+        console.log(thishash);
+
+        mapnav = getNavWithHash('map_canvas', thishash);
+        initCurrentPosition(thishash);
+        
+        document.getElementById('hash').value = thishash;
+        document.getElementById('hash_text').innerHTML = HOST + thishash;
+        document.getElementById('address_text').innerHTML = '';
+        document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
+
+        getPosts(thishash);
+
+      });
+      return;
+      
+    } else {
+      console.log('GeoLocation not supported');
+      thishash = 'khdbbl85q5gj'
+    }
+  }
+
+  mapnav = getNavWithHash('map_canvas', thishash);
+  initCurrentPosition(thishash);
+  
   document.getElementById('hash').value = thishash;
   document.getElementById('hash_text').innerHTML = HOST + thishash;
   document.getElementById('address_text').innerHTML = '';
   document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
-
+  
   getPosts(thishash);
  
 }
