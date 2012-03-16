@@ -132,7 +132,10 @@ a { text-decoration: none; }
 
 .poster {
     font-size: 12px;
+    text-decoration: underline;
+    font-family: 'Helvetica';
 }
+
 
 .content {
     font-size: 14px;
@@ -148,8 +151,7 @@ a { text-decoration: none; }
     background: #eee;
     border-radius: 3px;
     font-family: 'Symbol'; 
-    font-color: #000;
-    
+    font-color: #000;    
 }
 
 

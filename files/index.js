@@ -10,7 +10,6 @@ var mapnav;
 var current_position_marker;
 
 
-
 function getPosts(thishash){
   document.body.removeChild(document.getElementById('feed'));
   var newfeed = document.createElement('div');
@@ -39,7 +38,7 @@ function getPosts(thishash){
       
       var poster = document.createElement('div');
       poster.className = 'poster';
-      poster.innerHTML = posts[i].owner;
+      poster.innerHTML = '<a href="/u/'+posts[i].owner+'">'+posts[i].owner+'</a>';
 
       var content = document.createElement('div');
       content.className = 'content';
@@ -82,6 +81,7 @@ function goto(address){
     document.getElementById('gps_text').innerHTML = lat + ', ' + lng;
     document.getElementById('hash').value = thishash;
     getPosts(thishash);
+ 
   });
 }
 
