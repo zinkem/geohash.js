@@ -71,6 +71,14 @@ function getPosts(thishash){
   }
 }
 
+//updates console output and post form target
+function updateConsole(lat, lng, address, hash){
+  document.getElementById('hash_text').innerHTML = HOST + hash;
+  document.getElementById('address_text').innerHTML = address;
+  document.getElementById('gps_text').innerHTML = lat + ', ' + lng;
+  document.getElementById('hash').value = hash;
+}
+
 //goes to address when it is typed in search bar
 function goto(address){
   document.getElementById('query').value = '';
@@ -84,10 +92,7 @@ function goto(address){
       position: results[0].geometry.location
     });
 
-    document.getElementById('hash_text').innerHTML = HOST + thishash;
-    document.getElementById('address_text').innerHTML = results[0].formatted_address;
-    document.getElementById('gps_text').innerHTML = lat + ', ' + lng;
-    document.getElementById('hash').value = thishash;
+    updateConsole(lat, lng, results[0].formatted_addres, thishash);
     getPosts(thishash);
  
   });
@@ -131,11 +136,8 @@ function markerAdjust(){
     });
     
     var thishash = geohash(newlocation.lat(), newlocation.lng());
-    document.getElementById('hash_text').innerHTML = HOST + thishash;
-    document.getElementById('address_text').innerHTML = '';
-    document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
-    document.getElementById('hash').value = thishash;
 
+    updateConsole(newlocation.lat(), newlocation.lng(), '', thishash);    
     getPosts(thishash);
   }
 }
@@ -167,12 +169,8 @@ function initCurrentPosition(thishash){
   
   google.maps.event.addListener(current_position_marker, 'dragend', function(event){
     var newlocation = current_position_marker.getPosition();
-    
     var thishash = geohash(newlocation.lat(), newlocation.lng());
-    document.getElementById('hash_text').innerHTML = HOST + thishash;
-    document.getElementById('address_text').innerHTML = '';
-    document.getElementById('gps_text').innerHTML = newlocation.lat() + ', ' + newlocation.lng();
-    document.getElementById('hash').value = thishash;
+    updateConsole(newlocation.lat(), newlocation.lng(), '', thishash);    
     getPosts(thishash);
     current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
@@ -181,16 +179,12 @@ function initCurrentPosition(thishash){
   google.maps.event.addListener(mapnav.map, 'zoom_changed', markerAdjust);
 }
 
+//initializes the map (and current position marker)
 function initMap(thishash){
   
   mapnav = getNavWithHash('map_canvas', thishash);
   initCurrentPosition(thishash);
-  
-  document.getElementById('hash').value = thishash;
-  document.getElementById('hash_text').innerHTML = HOST + thishash;
-  document.getElementById('address_text').innerHTML = '';
-  document.getElementById('gps_text').innerHTML = mapnav.lat + ', ' + mapnav.lng;
-  
+  updateConsole(mapnav.lat, mapnav.lng, '', thishash);    
   getPosts(thishash);
 }
 
