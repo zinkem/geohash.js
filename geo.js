@@ -43,14 +43,20 @@ var s = http.createServer(function (req, res) {
   var filepath = path.join(process.cwd(), 'files', endpoint);
   var args = parsedReq.query;
 
-  //serverLog('Request for ' + endpoint );
+  serverLog('Request for ' + endpoint );
   
   path.exists(filepath, function(exists){
     if(!exists){
       switch(endpoint){
       case '/api/posts':
-        serverLog(args.geohash+' fetch');
-        geodb.getPosts(res, args.geohash);
+        if(args.geohash){
+          geodb.getPostsByHash(res, args.geohash);
+          serverLog(args.geohash+'# fetch');
+        } else if(args.user) {
+          geodb.getPostsByUser(res, args.user);
+          serverLog(args.user+' fetch');
+        } else 
+          res.end();
         break;
       case '/api/geohash':
         res.writeHead(200, {'Content-Type':'text/plain'});
@@ -81,6 +87,10 @@ var s = http.createServer(function (req, res) {
         //create new post, redirect back to location of post
         serverLog(args.hash+'#'+args.user+' posts `'+args.content+'`');
         geodb.createPost(args.user, args.pass, args.content, args.hash, res);
+        break;
+      case '/u/':
+        serverLog("burp");
+        res.end();
         break;
       default: //if it hasnt ben caught, probably a location hash
         var h = endpoint.slice(1);
