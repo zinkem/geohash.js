@@ -5,6 +5,15 @@
  *
  */
 
+function parseTimeStamp(timestamp){
+  var year = timestamp.substring(0, 4);
+  var month = timestamp.substring(5, 7);
+  
+  var day = timestamp.substring(8, 10);
+  var time = timestamp.substring(11, 16);
+  
+  return time+' '+month+'/'+day+'/'+year;
+}
 
 function getPosts(user){
   var request = new XMLHttpRequest();
@@ -37,7 +46,7 @@ function getPosts(user){
       
       var time = document.createElement('span');
       time.className = 'timestamp';
-      time.innerHTML = posts[i].time;
+      time.innerHTML = parseTimeStamp(posts[i].time);
 
 
       node.appendChild(poster);

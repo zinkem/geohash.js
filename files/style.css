@@ -114,14 +114,15 @@ a { text-decoration: none; }
 
 .post {
     margin: 4px 0px 4px 0px;
-    padding: 4px 4px 4px 4px;
+    padding: 4px 4px 13px 4px;
     width: 284px;
     min-height: 50px;
     background: #ffe;
 }
 
 .odd_post {
-    padding: 4px 4px 4px 4px;
+    margin: 4px 0px 4px 0px;
+    padding: 4px 4px 13px 4px;
     background: #eef;
     color: #333;
     width: 284px;

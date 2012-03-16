@@ -9,6 +9,15 @@ var HOST = 'http://www.zinkem.com:8000/';
 var mapnav;
 var current_position_marker;
 
+function parseTimeStamp(timestamp){
+  var year = timestamp.substring(0, 4);
+  var month = timestamp.substring(5, 7);
+  
+  var day = timestamp.substring(8, 10);
+  var time = timestamp.substring(11, 16);
+  
+  return time+' '+month+'/'+day+'/'+year;
+}
 
 function getPosts(thishash){
   document.body.removeChild(document.getElementById('feed'));
@@ -50,7 +59,7 @@ function getPosts(thishash){
 
       var time = document.createElement('span');
       time.className = 'timestamp';
-      time.innerHTML = posts[i].time;
+      time.innerHTML = parseTimeStamp(posts[i].time);
 
 
       node.appendChild(poster);
