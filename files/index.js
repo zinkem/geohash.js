@@ -50,56 +50,93 @@ function placeComment(hash, user, content){
   }
 }
 
-
+var postcache = {}
 function getPosts(thishash){
   document.body.removeChild(document.getElementById('feed'));
   var newfeed = document.createElement('div');
   newfeed.id = 'feed';
   document.body.appendChild(newfeed);
   
-  var request = new XMLHttpRequest();
-  request.open('GET', 'api/posts?geohash=' + thishash.substring(0, 3), false);
-  request.send(null);
-  
-  if(request.status == 200){
-    var posts = JSON.parse(request.responseText);
+  var mapbounds = mapnav.map.getBounds();
 
-    infodict = {};
-    for( m in markerdict ){
-      console.log(m);
-      google.maps.event.clearInstanceListeners(markerdict[m]);
+  var neLatLng = mapbounds.getNorthEast();
+  var swLatLng = mapbounds.getSouthWest();
+  var hashlist = [geohash(neLatLng.lat(), neLatLng.lng()),
+                  geohash(neLatLng.lat(), swLatLng.lng()),
+                  geohash(swLatLng.lat(), neLatLng.lng()),
+                  geohash(swLatLng.lat(), swLatLng.lng())];
+
+
+  
+
+  var resolution = neLatLng.lat() - swLatLng.lat();
+  console.log(resolution);
+  if(resolution > 33){
+    resolution = 1;
+  } else if(resolution > 1){
+    resolution = 2;
+  } else if(resolution > .17){
+    resolution = 3;
+  } else {
+    resolution = 4;
+  }
+
+  var postbuffer = {};
+  for(h in hashlist){
+    hashreq = hashlist[h].substring(0, resolution);
+    if(!postbuffer[hashreq]){
+      if(!postcache[hashreq]){
+        var request = new XMLHttpRequest();
+        request.open('GET', 'api/posts?geohash='+hashreq, false);
+        request.send(null);
+        
+        if(request.status == 200){
+          postcache[hashreq] = JSON.parse(request.responseText);
+        }
+      }
+      postbuffer[hashreq] = postcache[hashreq];
+    }
+  }
+  
+  var posts = [];
+  for(p in postbuffer){
+    posts = posts.concat(postbuffer[p]);
+    console.log(posts);
+  }
+
+  infodict = {};
+  for( m in markerdict ){
+    google.maps.event.clearInstanceListeners(markerdict[m]);
+  }
+  
+  for(var i = 0; i < posts.length; i++ ){
+    //put comment on the map
+    placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
+    
+    var node = document.createElement('div');
+    node.className = 'post';
+    if(i%2 == 0){
+      node.className = 'odd_post';
     }
 
-    for(var i = 0; i < posts.length; i++ ){
-      if(posts.length > 8  && i == 0)
-        i = posts.length - 8;
-      
-      //put comment on the map
-      placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
-
-      var node = document.createElement('div');
-      node.className = 'post';
-      if(i%2 == 0){
-        node.className = 'odd_post';
-      }
-      
+    if(i > posts.length - 8){
       var poster = document.createElement('div');
       poster.className = 'poster';
       poster.innerHTML = '<a href="/u/'+posts[i].owner+'">'+posts[i].owner+'</a>';
-
+      
       var content = document.createElement('div');
       content.className = 'content';
       content.innerHTML = posts[i].content;
-
+      
       var phash = document.createElement('span');
       phash.className = 'phash';
       phash.innerHTML = '<a href="/'+posts[i].geohash+'">goto</a>';
-
+      
       var time = document.createElement('span');
       time.className = 'timestamp';
       time.innerHTML = parseTimeStamp(posts[i].time);
-
-
+      
+      
       node.appendChild(poster);
       node.appendChild(content);
       node.appendChild(phash);
@@ -108,6 +145,7 @@ function getPosts(thishash){
     }
   }
 }
+
 
 //updates console output and post form target
 function updateConsole(lat, lng, address, hash){
@@ -155,7 +193,7 @@ function markerAdjust(){
     var thishash = geohash(newlocation.lat(), newlocation.lng());
 
     updateConsole(newlocation.lat(), newlocation.lng(), '', thishash);    
-    getPosts(thishash);
+    //getPosts(thishash);
   }
 }
 
@@ -183,17 +221,15 @@ function initCurrentPosition(thishash){
   google.maps.event.addListener(current_position_marker, 'mouseup', function(event){
     current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
   });
-  
+
   google.maps.event.addListener(current_position_marker, 'dragend', function(event){
     var newlocation = current_position_marker.getPosition();
     var thishash = geohash(newlocation.lat(), newlocation.lng());
     updateConsole(newlocation.lat(), newlocation.lng(), '', thishash);    
-    getPosts(thishash);
+    //getPosts(thishash);
     current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
+
   });
-  
-  google.maps.event.addListener(mapnav.map, 'dragend',  markerAdjust);
-  google.maps.event.addListener(mapnav.map, 'zoom_changed', markerAdjust);
 }
 
 //initializes the map (and current position marker)
@@ -201,8 +237,38 @@ function initMap(thishash){
   
   mapnav = getNavWithHash('map_canvas', thishash);
   initCurrentPosition(thishash);
-  updateConsole(mapnav.lat, mapnav.lng, '', thishash);    
-  getPosts(thishash);
+  updateConsole(mapnav.lat, mapnav.lng, '', thishash);
+  
+  //adjust marker and re-query posts when bounds change
+  google.maps.event.addListener(mapnav.map, 'bounds_changed', function(){
+    markerAdjust();
+    getPosts(thishash);
+  });
+
+  //suppress bounds changed while dragging
+  google.maps.event.addListener(mapnav.map, 'dragstart', function(){
+    google.maps.event.clearListeners(mapnav.map, 'bounds_changed');
+  });
+
+  //re-enable change of bounds fn
+  google.maps.event.addListener(mapnav.map, 'dragend',  function(){
+    google.maps.event.addListener(mapnav.map, 'bounds_changed', function(){
+      markerAdjust();
+      getPosts(thishash);
+    });
+  });
+  //suppress bounds changed while dragging
+  google.maps.event.addListener(mapnav.map, 'dragstart', function(){
+    google.maps.event.clearListeners(mapnav.map, 'bounds_changed');
+  });
+
+  //re-enable change of bounds fn
+  google.maps.event.addListener(mapnav.map, 'dragend',  function(){
+    google.maps.event.addListener(mapnav.map, 'bounds_changed', function(){
+      markerAdjust();
+      getPosts(thishash);
+    });
+  });
 }
 
 //initializes the page
