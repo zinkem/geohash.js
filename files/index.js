@@ -19,6 +19,38 @@ function parseTimeStamp(timestamp){
   return time+' '+month+'/'+day+'/'+year;
 }
 
+var markerdict = {};
+var infodict = {};
+
+//places a marker on the map, or TODO: update marker when one already exists
+function placeComment(hash, user, content){
+
+  if(!markerdict[hash])
+    markerdict[hash] = mapnav.flagHash(hash);
+  var marker = markerdict[hash];
+  marker.setIcon('/img/comment-map-icon-2.png');
+
+  if(!infodict[hash]) {
+    var location = marker.getPosition();
+    var infopts = {content: user + '> ' + content,
+                   disableAutoPan:false,
+                   maxWidth: 0,
+                   pixelOffset: new google.maps.Size(0, 0),
+                   position: location,
+                   zIndex: 1}
+    var infowin = new google.maps.InfoWindow(infopts);
+    infodict[hash] = infowin;
+
+    //listen for clicks...
+    google.maps.event.addListener(marker, 'click', function(event){
+      infowin.open(mapnav.map);
+    });
+  } else {
+    infodict[hash].content += '<br/>'+user+'> '+content;
+  }
+}
+
+
 function getPosts(thishash){
   document.body.removeChild(document.getElementById('feed'));
   var newfeed = document.createElement('div');
@@ -26,12 +58,18 @@ function getPosts(thishash){
   document.body.appendChild(newfeed);
   
   var request = new XMLHttpRequest();
-  request.open('GET', 'api/posts?geohash=' + thishash, false);
+  request.open('GET', 'api/posts?geohash=' + thishash.substring(0, 3), false);
   request.send(null);
   
   if(request.status == 200){
     var posts = JSON.parse(request.responseText);
-    
+
+    infodict = {};
+    for( m in markerdict ){
+      console.log(m);
+      google.maps.event.clearInstanceListeners(markerdict[m]);
+    }
+
     for(var i = 0; i < posts.length; i++ ){
       if(posts.length > 8  && i == 0)
         i = posts.length - 8;
@@ -95,27 +133,6 @@ function goto(address){
     updateConsole(lat, lng, results[0].formatted_addres, thishash);
     getPosts(thishash);
  
-  });
-}
-
-//places a marker on the map, or TODO: update marker when one already exists
-function placeComment(hash, user, content){
-  var marker = mapnav.flagHash(hash);
-  var coords = geofind(hash);
-  var location = new google.maps.LatLng(coords.lat, coords.lng);
-  var infopts = {content: user + '> ' + content,
-                 disableAutoPan:false,
-                 maxWidth: 0,
-                 pixelOffset: new google.maps.Size(0, 0),
-                 position: location,
-                 zIndex: 1}
-  var infowin = new google.maps.InfoWindow(infopts);
-
-  marker.setIcon('/img/comment-map-icon-2.png');
-  
-  //listen for clicks...
-  google.maps.event.addListener(marker, 'click', function(event){
-    infowin.open(mapnav.map);
   });
 }
 
