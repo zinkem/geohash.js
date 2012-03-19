@@ -43,7 +43,7 @@ var s = http.createServer(function (req, res) {
   var filepath = path.join(process.cwd(), 'files', endpoint);
   var args = parsedReq.query;
 
-  serverLog('Request for ' + endpoint );
+    //serverLog('Request for ' + endpoint );
   
   path.exists(filepath, function(exists){
     if(!exists){
