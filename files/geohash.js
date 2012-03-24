@@ -46,19 +46,19 @@ function geohash(lat, lon){
       var midlat = (minlat + maxlat)/2;
       var midlon = (minlon + maxlon)/2;
       
-      if(lat < midlat){
-        maxlat = midlat;
-      } else {
-        hashnum += 1;
-        minlat = midlat;
-      }
-      hashnum = hashnum << 1;
-      
       if(lon < midlon){
         maxlon = midlon;
       } else {
         hashnum += 1;
         minlon = midlon;
+      }
+      hashnum = hashnum << 1;
+      
+      if(lat < midlat){
+        maxlat = midlat;
+      } else {
+        hashnum += 1;
+        minlat = midlat;
       }
       hashnum = hashnum << 1;
     }
@@ -86,13 +86,14 @@ function geofind(hash32){
   var index = 0;
   for(var i = 0; i < 32; i++){
     if(hash[index++] == '1')
-      lat += inclat;
-    
-    if(hash[index++] == '1')
       lon += inclon;
-    
+
+    if(hash[index++] == '1')
+      lat += inclat;
+
+    inclon = inclon/2;    
     inclat = inclat/2;
-    inclon = inclon/2;
+
   }
   
   var resp = {};

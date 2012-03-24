@@ -112,14 +112,17 @@ function getPosts(thishash){
   for(var i = 0; i < posts.length; i++ ){
     //put comment on the map
     placeComment(posts[i].geohash, posts[i].owner, posts[i].content);
-    
+
+    var latlng = markerdict[posts[i].geohash].getPosition();
+    console.log(latlng);
+
     var node = document.createElement('div');
     node.className = 'post';
     if(i%2 == 0){
       node.className = 'odd_post';
     }
 
-    if(i > posts.length - 8){
+    if(true){
       var poster = document.createElement('div');
       poster.className = 'poster';
       poster.innerHTML = '<a href="/u/'+posts[i].owner+'">'+posts[i].owner+'</a>';
