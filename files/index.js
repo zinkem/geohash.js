@@ -243,7 +243,9 @@ function initCurrentPosition(thishash){
 
 //initializes the map (and current position marker)
 function initMap(thishash){
-  
+    if(!validHash(thishash))
+    document.getElementById('hash_text').innerHTML = 'error, invalid url';
+
   mapnav = getNavWithHash('map_canvas', thishash);
   initCurrentPosition(thishash);
   updateConsole(mapnav.lat, mapnav.lng, '', thishash);

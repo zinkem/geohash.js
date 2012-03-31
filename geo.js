@@ -30,6 +30,11 @@ function filetype(filename){
 
 //assumes path exists!
 function serveFile(filepath, res, callback){
+  if(filepath[filepath.length-1] ==  '/')
+    filepath += 'index.html';
+
+  serverLog("fpath "+ filepath);
+
   fs.readFile(filepath, 'binary', function(err, file){
     res.writeHead(200, filetype(filepath));
     res.write(file, 'binary');
@@ -38,12 +43,9 @@ function serveFile(filepath, res, callback){
   });
 }
 
-//scratch
-
+//non-file endpoints to server
 function GeoServer(){};
-
 util.inherits(GeoServer, events.EventEmitter);
-
 var geoserve = new GeoServer();
 
 geoserve.on('/api/posts', function(res, args){
@@ -91,8 +93,8 @@ geoserve.on('geohash', function(res, args){
   serveFile('./files/index.html', res);
 });
 
-//end scrach 
-
+//end endpoint listeners section, 
+//invoke endpoints with geoserve.emit('name', res, args);
 
 //'main'
 var s = http.createServer(function (req, res) {
@@ -106,11 +108,7 @@ var s = http.createServer(function (req, res) {
   path.exists(filepath, function(exists){
     if(exists){
       //serve requested files if path exists
-      if(endpoint == '/'){
-        serveFile('./files/index.html', res);
-      } else {
-        serveFile(filepath, res);
-      }
+      serveFile(filepath, res);
       return;
     }
     
