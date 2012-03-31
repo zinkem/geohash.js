@@ -19,6 +19,8 @@ function parseTimeStamp(timestamp){
   return time+' '+month+'/'+day+'/'+year;
 }
 
+
+
 var markerdict = {};
 var infodict = {};
 
@@ -200,29 +202,33 @@ function markerAdjust(){
   }
 }
 
+var curPos = { startImage: new google.maps.MarkerImage( '/img/you-are-here-2.png'),
+               heldImage: new google.maps.MarkerImage( '/img/you-are-here-1.png'),
+               hoverImage: new google.maps.MarkerImage( '/img/you-are-here-3.png') }
+
 //initializes the current position marker
 function initCurrentPosition(thishash){
   current_position_marker = mapnav.flagHash(thishash);
   current_position_marker.setOptions({
     draggable: true,
     animation: google.maps.Animation.DROP,
-    icon: '/img/you-are-here-2.png'
+    icon: curPos.startImage
   });
   
   google.maps.event.addListener(current_position_marker, 'mouseover', function(event){
-    current_position_marker.setOptions({ icon: '/img/you-are-here-3.png' });
+    current_position_marker.setIcon(curPos.hoverImage);
   });
   
   google.maps.event.addListener(current_position_marker, 'mouseout', function(event){
-    current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
+    current_position_marker.setIcon(curPos.startImage);
   });
   
   google.maps.event.addListener(current_position_marker, 'mousedown', function(event){
-    current_position_marker.setOptions({ icon: '/img/you-are-here-1.png' });
+    current_position_marker.setIcon(curPos.heldImage);
   });
   
   google.maps.event.addListener(current_position_marker, 'mouseup', function(event){
-    current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
+    current_position_marker.setIcon(curPos.startImage);
   });
 
   google.maps.event.addListener(current_position_marker, 'dragend', function(event){
@@ -230,7 +236,7 @@ function initCurrentPosition(thishash){
     var thishash = geohash(newlocation.lat(), newlocation.lng());
     updateConsole(newlocation.lat(), newlocation.lng(), '', thishash);    
     //getPosts(thishash);
-    current_position_marker.setOptions({ icon: '/img/you-are-here-2.png' });
+    current_position_marker.setIcon(curPos.startImage);
 
   });
 }
@@ -297,4 +303,5 @@ function initialize() {
   }
 
   initMap(thishash);
+
 }

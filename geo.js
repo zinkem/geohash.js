@@ -2,6 +2,8 @@ var http = require('http');
 var url = require('url');
 var path = require('path');
 var fs = require('fs');
+var events = require('events');
+var util = require('util');
 
 var geo = require('./lib/geolib');
 var geodb = require('./lib/geodb');
@@ -36,6 +38,58 @@ function serveFile(filepath, res, callback){
   });
 }
 
+//scratch
+
+function GeoServer(){};
+
+util.inherits(GeoServer, events.EventEmitter);
+
+var geoserve = new GeoServer();
+
+geoserve.on('/api/posts', function(res, args){
+  if(args.geohash){
+    geodb.getPostsByHash(res, args.geohash);
+    serverLog(args.geohash+'# fetch');
+  } else if(args.user) {
+    geodb.getPostsByUser(res, args.user);
+    serverLog(args.user+' fetch');
+  } else 
+    res.end();
+});
+
+geoserve.on('/api/geohash', function(res, args){
+  res.writeHead(200, {'Content-Type':'text/plain'});
+  res.write(geo.hash(args.lat, args.lon));
+  res.end('\n');
+});
+
+geoserve.on('/api/geofind', function(res, args){
+  res.writeHead(200, {'Content-Type':'text/plain'});
+  var loc = geo.find(args.hash);
+  res.write(loc.lat + ' ' + loc.lng);
+  res.end('\n');
+});
+
+geoserve.on('/api/create', function(res, args){
+  //if args, create account
+  //if no args, show form for account creation
+  if(args.user && args.pass){
+    serverLog('Attempting to create account for '+args.user);
+    geodb.createUser(args.user, args.pass, res);
+  } else {
+    serveFile('./files/newuser.html', res);
+  }
+});
+
+geoserve.on('/new', function(res, args){
+  //create new post, redirect back to location of post
+  serverLog(args.hash+'#'+args.user+' posts `'+args.content+'`');
+  geodb.createPost(args.user, args.pass, args.content, args.hash, res);
+});
+
+//end scrach 
+
+
 //'main'
 var s = http.createServer(function (req, res) {
   var parsedReq = url.parse(req.url, true);
@@ -49,44 +103,11 @@ var s = http.createServer(function (req, res) {
     if(!exists){
       switch(endpoint){
       case '/api/posts':
-        if(args.geohash){
-          geodb.getPostsByHash(res, args.geohash);
-          serverLog(args.geohash+'# fetch');
-        } else if(args.user) {
-          geodb.getPostsByUser(res, args.user);
-          serverLog(args.user+' fetch');
-        } else 
-          res.end();
-        break;
       case '/api/geohash':
-        res.writeHead(200, {'Content-Type':'text/plain'});
-        res.write(geo.hash(args.lat, args.lon));
-        res.end('\n');
-        break;
       case '/api/geofind':
-        res.writeHead(200, {'Content-Type':'text/plain'});
-        var loc = geo.find(args.hash);
-        res.write(loc.lat + ' ' + loc.lon);
-        res.end('\n');
-        break;
       case '/api/create':
-        //if args, create account
-        //if no args, show form for account creation
-        if(args.user && args.pass){
-          serverLog('Attempting to create account for '+args.user);
-          geodb.createUser(args.user, args.pass, res);
-        } else {
-          serveFile('./files/newuser.html', res);
-        }
-        break;
-      case '/login':
-        //if args, login
-        //if no args, show form to log in
-        break;
       case '/new':
-        //create new post, redirect back to location of post
-        serverLog(args.hash+'#'+args.user+' posts `'+args.content+'`');
-        geodb.createPost(args.user, args.pass, args.content, args.hash, res);
+        geoserve.emit(endpoint, res, args);
         break;
       default: //if it hasnt ben caught, probably a location hash
         var h = endpoint.slice(1);
