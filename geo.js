@@ -81,7 +81,7 @@ geoserve.on('/api/create', function(res, args){
   }
 });
 
-geoserve.on('/new', function(res, args){
+geoserve.on('/api/new', function(res, args){
   //create new post, redirect back to location of post
   serverLog(args.hash+'#'+args.user+' posts `'+args.content+'`');
   geodb.createPost(args.user, args.pass, args.content, args.hash, res);
@@ -101,27 +101,20 @@ var s = http.createServer(function (req, res) {
   
   path.exists(filepath, function(exists){
     if(!exists){
-      switch(endpoint){
-      case '/api/posts':
-      case '/api/geohash':
-      case '/api/geofind':
-      case '/api/create':
-      case '/new':
-        geoserve.emit(endpoint, res, args);
-        break;
-      default: //if it hasnt ben caught, probably a location hash
-        var h = endpoint.slice(1);
-        if(geo.validHash(h)){
-          serveFile('./files/index.html', res);
-        } else if( endpoint.substring(0, 3) == '/u/' &&
-                   endpoint.slice(3)) { 
-          serveFile('./files/userfeed.html', res);
-        } else {
-          res.writeHead(404, {'Content-Type': 'text/plain'});
-          res.write("Invalid Query.");
-          res.end('\n');
-        }
+      var h = endpoint.slice(1);
+      if(geo.validHash(h)){
+        serveFile('./files/index.html', res);
+      } else if( endpoint.substring(0, 3) == '/u/' &&
+                 endpoint.slice(3)) { 
+        serveFile('./files/userfeed.html', res); 
+      } else if( endpoint.substring(0, 5) == '/api/' ){
+        geoserve.emit(endpoint, res, args);        
+      } else {
+        res.writeHead(404, {'Content-Type': 'text/plain'});
+        res.write("Invalid Query.");
+        res.end('\n');
       }
+      
       return;
     }
     
