@@ -19,6 +19,42 @@ function parseTimeStamp(timestamp){
   return time+' '+month+'/'+day+'/'+year;
 }
 
+function getRight(current32){
+  var current = base10[current32];
+  if(current % 2 == 0)
+    return base32[(current+1)%32];
+  if(current % 8 < 4 )
+    return base32[(current+3)%32];
+  return base32[(current+11)%32];
+}
+
+function getTop(current32){
+  var current = base10[current32];
+  if(current%4 < 2)
+    return base32[(current+2)%32];
+  if(current%16 < 8)
+    return base32[(current+6)%32];
+  return base32[(current+22)%32];
+}
+
+var lngMajor = { right: getRight,
+                 up: getTop };
+var latMajor = { right: getTop,
+                 up: getRight};
+
+function hRes(lo, hi){
+  var w = hi - lo;
+
+  if(w > 45)
+    return 0;
+  if(w > 11.25)
+    return 1;
+  if(w > 1.40625)
+    return 3;
+  if(w > .3515625)
+    return 4;
+
+}
 
 
 var markerdict = {};
@@ -68,20 +104,9 @@ function getPosts(thishash){
                   geohash(swLatLng.lat(), neLatLng.lng()),
                   geohash(swLatLng.lat(), swLatLng.lng())];
 
-
-  
-
-  var resolution = neLatLng.lat() - swLatLng.lat();
+  var resolution = hRes( swLatLng.lng(), neLatLng.lng() );
   console.log(resolution);
-  if(resolution > 33){
-    resolution = 1;
-  } else if(resolution > 1){
-    resolution = 2;
-  } else if(resolution > .17){
-    resolution = 3;
-  } else {
-    resolution = 4;
-  }
+  console.log(hashlist);
 
   var postbuffer = {};
   for(h in hashlist){
@@ -140,7 +165,6 @@ function getPosts(thishash){
       var time = document.createElement('span');
       time.className = 'timestamp';
       time.innerHTML = parseTimeStamp(posts[i].time);
-      
       
       node.appendChild(poster);
       node.appendChild(content);
@@ -305,5 +329,4 @@ function initialize() {
   }
 
   initMap(thishash);
-
 }

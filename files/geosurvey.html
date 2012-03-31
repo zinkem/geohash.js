@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>zinkem maps</title>
+    <link rel="stylesheet" href="/style.css" type="text/css" />
+  </head>
+  <script type="text/javascript"
+          src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCddAsi8obXG5XMPFXdx_RvdNSjgELTtDU&sensor=false">
+  </script>
+
+  <script type="text/javascript" src="geohash.js"></script>
+  <script type="text/javascript" src="navigator.js"></script>
+  <script type="text/javascript" src="geosurvey.js"></script>
+  
+  <body onload="initialize()">
+
+    <div id="map_canvas"></div>
+    <div id="feed"></div>
+    
+    <div id="input">
+      <form action="javascript:goto(document.getElementById('query').value)">
+        <input class="address" type="text" id="query" 
+               placeholder="Enter an address to center map."/>
+        <!-- input class="qbutton" type="submit" value="find" / -->
+      </form>
+    </div>
+
+    <div id="console">
+      <div id="address_text"></div>
+      <div id="hash_text"></div>
+      <div id="gps_text"></div>
+    </div>
+
+    <div id="create_post">
+      <form action="/api/new">
+        <input name="user" type="text" placeholder="Username"/>
+        <input name="pass" type="password" placeholder="Password"/>
+        <input id="p_entry" name="content" type="text" placeholder="Enter comment here and hit Post"/>
+        <input id="hash" name="hash" type="hidden" />
+        <input type="submit" value="Post" />
+      </form>
+      <span id="newuser"><a href="/newuser.html">Create Account</a></span>
+    </div>
+    
+  </body>
+</html>
