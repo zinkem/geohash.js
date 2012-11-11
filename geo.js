@@ -105,7 +105,7 @@ var s = http.createServer(function (req, res) {
 
   //serverLog('Request for ' + endpoint );
   
-  path.exists(filepath, function(exists){
+  fs.exists(filepath, function(exists){
     if(exists){
       //serve requested files if path exists
       serveFile(filepath, res);
